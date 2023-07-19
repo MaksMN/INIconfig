@@ -23,7 +23,20 @@ std::string getConfigValue(std::string path, std::string section, std::string va
 
                 std::getline(stream, line, '[');
 
-                auto value_pos = line.find(value);
+                // очистка пробелов и табуляторов перед параметрами
+                while (1)
+                {
+                    auto value_bpos = line.find("\n ");
+                    auto value_tpos = line.find("\n\t");
+                    if (value_bpos == std::string::npos && value_tpos == std::string::npos)
+                        break;
+
+                    if (value_bpos != std::string::npos)
+                        line.erase(value_bpos + 1, 1);
+                    if (value_tpos != std::string::npos)
+                        line.erase(value_tpos + 1, 1);
+                }
+                auto value_pos = line.find("\n" + value) + 1;
                 if (value_pos == std::string::npos)
                     break;
                 line.erase(0, value_len + value_pos);
